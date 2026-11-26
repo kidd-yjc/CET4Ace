@@ -1,0 +1,19 @@
+# Build outputs and local toolchains
+build/
+dist/
+resources/
+library/
+tools/sdk/
+tools/jdk/
+tools/keystore/
+tools/_dl/
+tools/_tmp/
+tools/__pycache__/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+Thumbs.db

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0f766e">
+<title>四级通关</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+
+  <header class="topbar">
+    <div class="tb-row">
+      <button class="icon-btn" id="btnBack" hidden>&#8249;</button>
+      <h1 id="pageTitle">四级通关</h1>
+      <div class="tb-stat" id="topStat"></div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== 首页 ===== -->
+    <section class="view" id="view-home">
+      <div class="hero" data-go="today" role="button" style="cursor:pointer">
+        <div class="hero-txt">
+          <div class="hero-kicker">今天</div>
+          <div class="hero-title" id="heroTitle">开始今日训练</div>
+          <div class="hero-sub" id="heroSub"></div>
+          <div class="hero-days" id="heroDays"></div>
+        </div>
+        <div class="hero-ring"><span id="heroRingNum">0</span><small>%</small></div>
+      </div>
+      <div class="grid2">
+        <button class="tile" data-go="vocab">
+          <div class="tile-k">背单词</div>
+          <div class="tile-v" id="tileVocab">0 / 30</div>
+          <div class="tile-s">今日目标</div>
+        </button>
+        <button class="tile" data-go="exam">
+          <div class="tile-k">模考</div>
+          <div class="tile-v" id="tileExam">12 套</div>
+          <div class="tile-s">近年真题</div>
+        </button>
+        <button class="tile" data-go="library">
+          <div class="tile-k">真题库</div>
+          <div class="tile-v" id="tileLib">28 考次</div>
+          <div class="tile-s">2014-2026 试卷</div>
+        </button>
+        <button class="tile" data-go="me">
+          <div class="tile-k">错题本</div>
+          <div class="tile-v" id="tileWrong">0</div>
+          <div class="tile-s">待复习</div>
+        </button>
+        <button class="tile" data-go="drill">
+          <div class="tile-k">专项训练</div>
+          <div class="tile-v" id="tileDrill">4 类题型</div>
+          <div class="tile-s">按题型刷题</div>
+        </button>
+        <button class="tile" data-go="report">
+          <div class="tile-k">学习报告</div>
+          <div class="tile-v" id="tileReport">--</div>
+          <div class="tile-s">710 估分 · 趋势</div>
+        </button>
+      </div>
+      <div class="sec-head"><span>冲刺计划</span><span class="link" data-go="report">看报告</span></div>
+      <div id="planBox"></div>
+      <div class="sec-head"><span>继续上次</span></div>
+      <div id="recentBox"></div>
+    </section>
+
+    <!-- ===== 今日一条流 ===== -->
+    <section class="view" id="view-today" hidden>
+      <div id="todayTop"></div>
+      <div class="td-mode" id="todayMode"></div>
+      <div id="todayList"></div>
+      <div id="todayFoot"></div>
+    </section>
+
+    <!-- ===== 模考列表 ===== -->
+    <section class="view" id="view-exam" hidden>
+      <div class="seg" id="examSeg">
+        <button class="seg-btn on" data-filter="all">全部</button>
+        <button class="seg-btn" data-filter="audio">含听力</button>
+        <button class="seg-btn" data-filter="reading">纯阅读</button>
+      </div>
+      <div class="seg years" id="yearSeg"></div>
+      <div id="examList"></div>
+    </section>
+
+    <!-- ===== 专项训练 ===== -->
+    <section class="view" id="view-drill" hidden>
+      <div class="seg" id="drillSeg">
+        <button class="seg-btn on" data-type="listening">听力</button>
+        <button class="seg-btn" data-type="cloze">选词</button>
+        <button class="seg-btn" data-type="matching">匹配</button>
+        <button class="seg-btn" data-type="reading">阅读</button>
+      </div>
+      <div id="drillBody"></div>
+    </section>
+
+    <!-- ===== 学习报告 ===== -->
+    <section class="view" id="view-report" hidden>
+      <div id="reportBody"></div>
+    </section>
+
+    <!-- ===== 错题重测 ===== -->
+    <section class="view" id="view-wrongtest" hidden>
+      <div id="wt2Body"></div>
+    </section>
+
+    <!-- ===== 答题页 ===== -->
+    <section class="view" id="view-paper" hidden>
+      <div class="exam-bar">
+        <div class="eb-left">
+          <div class="eb-title" id="paperTitle"></div>
+          <div class="eb-sub" id="paperSub"></div>
+        </div>
+        <div class="eb-timer" id="paperTimer">00:00</div>
+      </div>
+      <div id="audioBar"></div>
+      <div class="part-nav" id="partNav"></div>
+      <div id="qWrap"></div>
+      <div class="btn-row">
+        <button class="btn ghost" id="btnPrev">上一题</button>
+        <button class="btn" id="btnNext">下一题</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="btnSubmit">交卷估分</button>
+        <button class="btn ghost" id="btnSheet">答题卡</button>
+      </div>
+    </section>
+
+    <!-- ===== 成绩页 ===== -->
+    <section class="view" id="view-result" hidden>
+      <div class="result-card">
+        <div class="rc-score" id="rcScore">0</div>
+        <div class="rc-label">客观题正确率</div>
+        <div class="rc-detail" id="rcDetail"></div>
+      </div>
+      <div id="rcScoreCard"></div>
+      <div id="rcTopWords"></div>
+      <div class="sec-head"><span>逐题解析</span></div>
+      <div id="rcList"></div>
+      <div class="btn-row">
+        <button class="btn ghost" id="btnReviewWrong">只看错题</button>
+        <button class="btn primary" data-go="exam">返回列表</button>
+      </div>
+    </section>
+
+    <!-- ===== 真题资料库 ===== -->
+    <section class="view" id="view-library" hidden>
+      <div class="notice" id="libNotice"></div>
+      <div id="libList"></div>
+    </section>
+
+    <!-- ===== 背单词 ===== -->
+    <section class="view" id="view-vocab" hidden>
+      <div class="vtop">
+        <div class="vt-title">今日单词</div>
+        <div class="vt-count"><b id="vocabDone">0</b> / <span id="vocabGoal">30</span></div>
+        <div class="vt-bar"><i id="vocabBar"></i></div>
+      </div>
+      <div class="flash" id="flashCard"></div>
+      <div class="btn-row" id="flashBtns"></div>
+      <div class="btn-row">
+        <button class="btn ghost" data-go="wordtest">小测 10 题</button>
+        <button class="btn ghost" data-go="me">生词本 <span id="starCount">0</span></button>
+      </div>
+      <div class="oe-note" id="flashNote"></div>
+    </section>
+
+    <!-- ===== 单词测验 ===== -->
+    <section class="view" id="view-wordtest" hidden>
+      <div class="wt-head"><span id="wtProgress">1 / 10</span><span id="wtScore">0 分</span></div>
+      <div class="wt-word" id="wtWord"></div>
+      <div class="wt-opts" id="wtOpts"></div>
+      <div class="wt-tip" id="wtTip"></div>
+    </section>
+
+    <!-- ===== 写作与翻译 ===== -->
+    <section class="view" id="view-write" hidden>
+      <div class="seg" id="writeSeg">
+        <button class="seg-btn on" data-kind="writing">写作</button>
+        <button class="seg-btn" data-kind="translation">翻译</button>
+      </div>
+      <div class="notice">内置训练素材与范文，用于对照结构和句型，不是官方答案。写完先自查，再看范文；配好自己的 API Key 后可用 AI 精批，点按钮时只发送作文正文。</div>
+      <div id="aiLoopBox"></div>
+      <div id="writeList"></div>
+    </section>
+
+    <!-- ===== 我的 ===== -->
+    <section class="view" id="view-me" hidden>
+      <div class="stats" id="meStats"></div>
+      <div class="btn-row">
+        <button class="btn ghost" data-go="drill">专项训练</button>
+        <button class="btn ghost" data-go="report">学习报告</button>
+        <button class="btn ghost" data-go="wrongtest">错题重测</button>
+      </div>
+      <div class="sec-head"><span>错题本</span><span class="head-acts"><button class="link" data-go="wrongtest">曲线重测 ›</button><button class="link" id="btnClearWrong">清空</button></span></div>
+      <div id="wrongList"></div>
+      <div class="sec-head"><span>生词本</span><button class="link" id="btnClearStar">清空</button></div>
+      <div id="starList"></div>
+      <div class="sec-head"><span>设置</span></div>
+      <div class="setting">
+        <label>每日单词目标</label>
+        <select id="goalSelect">
+          <option value="15">15 个</option>
+          <option value="30">30 个</option>
+          <option value="50">50 个</option>
+          <option value="80">80 个</option>
+        </select>
+      </div>
+      <div class="setting">
+        <label>模考计时</label>
+        <select id="examModeSelect">
+          <option value="practice">练习模式（正计时）</option>
+          <option value="strict">考试模式（130 分钟倒计时）</option>
+        </select>
+      </div>
+      <div class="setting">
+        <label>背单词方式</label>
+        <select id="modeSelect">
+          <option value="en2cn">英 → 中</option>
+          <option value="cn2en">中 → 英</option>
+        </select>
+      </div>
+      <div class="setting">
+        <label>考试日期</label>
+        <input type="date" id="examDateInput" class="setting-input">
+      </div>
+      <div class="setting">
+        <label>每日提醒</label>
+        <select id="reminderSelect">
+          <option value="off">关闭</option>
+          <option value="on">开启（APK 内生效）</option>
+        </select>
+      </div>
+      <div class="setting">
+        <label>提醒时间</label>
+        <input type="time" id="reminderTimeInput" class="setting-input">
+      </div>
+      <div class="oe-note" id="reminderNote"></div>
+      <div class="sec-head"><span>AI 作文批改（自备 Key）</span><span class="head-acts ai-state" id="aiState">未配置</span></div>
+      <div class="setting">
+        <label>服务商</label>
+        <select id="aiPreset">
+          <option value="deepseek">DeepSeek（推荐，便宜）</option>
+          <option value="moonshot">Kimi / Moonshot</option>
+          <option value="zhipu">智谱 GLM</option>
+          <option value="siliconflow">硅基流动</option>
+          <option value="openai">OpenAI</option>
+          <option value="custom">自定义（OpenAI 兼容）</option>
+        </select>
+      </div>
+      <div class="setting ai-field">
+        <label>接口地址</label>
+        <input type="url" id="aiBase" class="setting-input" placeholder="https://.../chat/completions" autocomplete="off">
+      </div>
+      <div class="setting ai-field">
+        <label>模型名</label>
+        <input type="text" id="aiModel" class="setting-input" placeholder="deepseek-chat" autocomplete="off">
+      </div>
+      <div class="setting ai-field">
+        <label>API Key</label>
+        <input type="password" id="aiKey" class="setting-input" placeholder="sk-...（只保存在本机）" autocomplete="off">
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="aiSave" type="button">保存配置</button>
+        <button class="btn ghost" id="aiTest" type="button">测试连接</button>
+        <button class="btn ghost" id="aiClear" type="button">清除</button>
+      </div>
+      <div class="oe-note" id="aiNote">选服务商 → 填接口地址和模型 → 粘贴自己的 API Key。Key 不经过任何中转服务器，只随请求发给你填的服务商；只填你信任的地址。</div>
+      <button class="btn ghost wide" data-go="about">资料与版权说明</button>
+    </section>
+
+    <!-- ===== 关于 ===== -->
+    <section class="view" id="view-about" hidden>
+      <div class="about">
+        <h3>四级通关 CET4 Ace · 1.5</h3>
+        <p>离线四级备考工具：真题模考、专项训练、听力精听与听写、710 估分与趋势报告、写作翻译、AI 作文精批（用户自备 Key）、背单词、错题遗忘曲线重测、考试倒计时与冲刺计划。学习数据全部存放在本机，不上传；只有你主动点“AI 精批”时，作文正文才会发给你配置的服务商。</p>
+        <h4>数据来源</h4>
+        <ul>
+          <li>结构化真题 2019.06–2025.12（含解析与听力原文）：<br><a href="https://github.com/ShepiTT/CET_practice_questions">ShepiTT/CET_practice_questions</a></li>
+<li>结构化真题+听力原文/篇目时间点 2015.06–2018.12 与 2026.06：<br><a href="https://english-exam.lazynote.cn/cet4/">english-exam.lazynote.cn</a></li>
+<li>2016–2018 听力录音（m4a 转码）：<br><a href="https://www.happynchubby.xyz/">www.happynchubby.xyz</a></li>
+          <li>旧版结构化题库（交叉校验）：<br><a href="https://github.com/couldyyy9/cet-website">couldyyy9/cet-website</a>（MIT）</li>
+          <li>历年真题 PDF / 听力（2014–2026）：<br><a href="https://github.com/0609x/CET46-Resources">0609x/CET46-Resources</a></li>
+          <li>四级词库 7508 词（含音标、例句）：<br><a href="https://github.com/KyleBing/english-vocabulary">KyleBing/english-vocabulary</a></li>
+        </ul>
+        <h4>写作与翻译范文</h4>
+        <p>「写作」页的作文题目、范文、句型与翻译练习为本工程自编训练素材，用于对照结构与表达，不是官方真题答案。</p>
+        <h4>版权</h4>
+        <p>真题原文、听力音频及解析版权归原考试机构与相应权利人所有。本应用仅供个人学习自用，请勿上架应用商店或二次分发。</p>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tabbar" id="tabbar">
+    <button class="tab on" data-go="home"><i>&#9783;</i><span>首页</span></button>
+    <button class="tab" data-go="exam"><i>&#9998;</i><span>模考</span></button>
+    <button class="tab" data-go="vocab"><i>&#9730;</i><span>单词</span></button>
+    <button class="tab" data-go="write"><i>&#9997;</i><span>写作</span></button>
+    <button class="tab" data-go="me"><i>&#9786;</i><span>我的</span></button>
+  </nav>
+
+  <div class="sheet" id="sheet" hidden>
+    <div class="sheet-body">
+      <div class="sheet-head"><b>答题卡</b><button class="link" id="btnSheetClose">关闭</button></div>
+      <div class="sheet-grid" id="sheetGrid"></div>
+    </div>
+  </div>
+
+  <div class="sheet" id="wordSheet" hidden>
+    <div class="sheet-body word-body">
+      <div class="sheet-head"><b id="wsWord">word</b><button class="link" id="wsClose">关闭</button></div>
+      <div class="ws-ph" id="wsPh"></div>
+      <div class="ws-trans" id="wsTrans"></div>
+      <div class="ws-ex" id="wsEx"></div>
+      <div class="tr-idx" id="wsIdx"></div>
+      <div class="btn-row">
+        <button class="btn ghost" id="wsStar">☆ 加入生词本</button>
+        <button class="btn primary" id="wsGoVocab">去背单词</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet" id="dictSheet" hidden>
+    <div class="sheet-body dict-body">
+      <div class="sheet-head"><b>听写本段</b><button class="link" id="dictClose">关闭</button></div>
+      <div class="dict-bar">
+        <button class="mini" id="dictPlay">播放本段</button>
+        <button class="mini" id="dictSlow">0.75x</button>
+        <button class="mini" id="dictReveal">看原文</button>
+        <button class="mini" id="dictCheck">核对</button>
+      </div>
+      <div class="dict-hint">听到的空缺填进去，只错词形也算错；大小写不扣分。</div>
+      <div class="dict-script" id="dictScript"></div>
+      <div class="dict-result" id="dictResult"></div>
+      <audio id="dictAudio" preload="metadata"></audio>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/exam.js"></script>
+<script src="js/vocab.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/write.js"></script>
+<script src="js/train.js"></script>
+<script src="js/today.js"></script>
+<script src="data/bank/manifest.js"></script>
+<script src="data/library.js"></script>
+</body>
+</html>

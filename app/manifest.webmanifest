@@ -1,0 +1,14 @@
+{
+  "name": "四级通关",
+  "short_name": "四级通关",
+  "description": "离线四级备考：真题模考、听力、背单词",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f5",
+  "theme_color": "#0f766e",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
