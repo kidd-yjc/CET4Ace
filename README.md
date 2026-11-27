@@ -4,7 +4,9 @@
 
 > 当前版本 **v1.5**（2026-11）：在 v1.4 的 AI 作文精批之上，新增**今日一条流**（按 15/30/45 分钟自动排单词、专项、听写、错题、写作）与 **AI 批改闭环**（自动存档、错误类型聚合、改写后再批、基于当前作文追问）。Key 仍由 Android Keystore 加密，只存本机；网页层拿不到明文。
 >
-> **GitHub 仓库说明**：本仓库收录源码、题库数据与听力音频（约 220MB）；**不包含** `dist/CET4Ace.apk`（202MB，超过 GitHub 单文件 100MB 限制）、`library/` 真题 PDF 和 `build/` 构建缓存。APK 与完整资料请从本地「四级通关」目录取用；克隆后运行 `python tools/build_apk.py` 可重新构建 APK（首次会自动下载 JDK/SDK，需要网络）。
+> **在线网页版**：<https://kidd-yjc.github.io/CET4Ace/> —— 免安装，浏览器直接打开，手机可「添加到主屏幕」当 App 用。题库、听力音频、词库都随站点发布，进度存浏览器 localStorage。网页版不支持 AI 作文精批（要 APK 的原生加密存储与请求）和系统级每日通知；这两项装 APK 即可。
+>
+> **GitHub 仓库说明**：本仓库收录源码、题库数据与听力音频（约 220MB）；**不包含** `dist/CET4Ace.apk`（202MB，超过 GitHub 单文件 100MB 限制）、`library/` 真题 PDF 和 `build/` 构建缓存。APK、源码 ZIP、真题资料 ZIP 都在 [Releases v1.5](https://github.com/kidd-yjc/CET4Ace/releases/tag/v1.5)；克隆后运行 `python tools/build_apk.py` 也可重新构建 APK（首次会自动下载 JDK/SDK，需要网络）。
 
 - 内置 **74 套结构化真题**（2015.06 – 2026.06，每套 30–55 题，全部可作答、可自动判分）
 - **专项训练**：把 74 套拆成 761 个题组（听力 471 / 选词 74 / 匹配 74 / 阅读 142），按题型单独刷，做完即时判分与解析
@@ -74,12 +76,22 @@ CET4Ace/
 │   └── package_desktop.py   打包到桌面
 ├── library/                 全量真题 PDF（2014–2026），按考次分目录
 ├── dist/                    打好的 APK
-└── build/                   中间产物
+├── build/                   中间产物
+└── .github/workflows/pages.yml  把 app/ 自动发布到 GitHub Pages
 ```
 
 ---
 
-## 二、直接装 APK
+## 二、直接用网页版（免安装）
+
+在线地址：**<https://kidd-yjc.github.io/CET4Ace/>**（手机浏览器打开后可「添加到主屏幕」，像 App 一样全屏用）
+
+- 74 套真题、41 段听力音频、7508 词词库都随站点发布，打开即用，不用装包
+- 进度、错题、生词本存在浏览器 `localStorage`；换浏览器或清缓存会重置
+- 网页版**没有** AI 作文精批（依赖 APK 的原生加密存储与原生请求）和系统级每日通知，这两项只在 APK 里
+- 站点由 `.github/workflows/pages.yml` 自动部署：推送 `app/` 下的改动，Pages 会自动重建
+
+## 三、直接装 APK
 
 `dist/CET4Ace.apk` 已签名，传到手机点击安装即可（需允许「安装未知来源应用」）。
 
@@ -101,7 +113,7 @@ CET4Ace/
 
 ---
 
-## 三、自己重新打包 APK
+## 四、自己重新打包 APK
 
 ### 方式 A：命令行一键打包（推荐，不用装 Android Studio）
 
@@ -131,7 +143,7 @@ python tools/fetch_android_tools.py   # 华为云 JDK17 + 腾讯云 Android SDK�
 
 ---
 
-## 四、题库是怎么来的、怎么更新
+## 五、题库是怎么来的、怎么更新
 
 ### 数据链路
 
@@ -191,7 +203,7 @@ app/data/bank/*.json + manifest.json
 
 ---
 
-## 五、App 里能做什么
+## 六、App 里能做什么
 
 | 模块 | 能力 |
 | --- | --- |
@@ -216,7 +228,7 @@ app/data/bank/*.json + manifest.json
 
 ---
 
-## 六、已知边界（务必知道）
+## 七、已知边界（务必知道）
 
 1. **结构化可判分题库覆盖 2015.06 – 2026.06（74 套）**。**2014 全年（6 套）仍只有原卷 PDF**
    （在「真题库」页与桌面资料 ZIP 里）：公开可用的整卷结构库最早从 2015 年开始，2014 缺逐题答案，
@@ -236,10 +248,11 @@ app/data/bank/*.json + manifest.json
 9. **AI 精批需要你自备 API Key，且需要联网**。App 不内置任何 Key，也不承担服务商费用；Key 由 Android 6.0+ 的 Keystore AES-GCM 加密后存应用私有目录，网页层只拿到掩码。Android 5.x 没有 Keystore AES，只能放在应用私有目录（未加密），界面会明确提示。点「AI 精批」时发送的内容只有作文正文、题目与评分要求，不发送生词、错题、模考成绩等其他数据。追问只额外带上当前评分、当前作文和最近两轮问答。
 10. **AI 批改历史存在本机 localStorage**（`c4.aiHistory`，最多 80 篇），不上传服务器。清除 App 数据或卸载会一并丢失；换手机不会自动同步。错误类型是 AI 按固定标签归类的，仍可能出现归错类；统计只用于看趋势，不是精确语法诊断。
 11. **AI 接口必须兼容 OpenAI `POST /chat/completions` 格式**（请求头 Bearer Key，返回 `choices[0].message.content`）。DeepSeek / Kimi / 智谱 / 硅基流动 / OpenAI 预设可直接用；自定义服务商要填完整的 `/chat/completions` 地址和模型名。401/403 多数是 Key 或地址不匹配，404 多数是地址少了 `/v1`，429 是额度或频率限制。
+12. **网页版和 APK 跑的是同一份 `app/` 代码**，差别只在原生能力：网页版没有 `AIBridge`（AI 精批按钮会提示装 APK）与 `NotifyBridge`（无系统通知）。进度写在浏览器 localStorage，清缓存 / 换浏览器等于重新开始；站点约 217MB，GitHub Pages 站点上限 1GB，够用。
 
 ---
 
-## 七、数据来源与版权
+## 八、数据来源与版权
 
 | 内容 | 来源 | 许可 |
 | --- | --- | --- |
